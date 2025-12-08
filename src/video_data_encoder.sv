@@ -1,3 +1,4 @@
+//Encode 8-bit pixel data into 10-bit TMDS format for HDMI transmission.
 module video_data_encoder
 #(parameter COUNT_WIDTH = 5) //need to determine.
 (
