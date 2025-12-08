@@ -1,15 +1,26 @@
-module video_encoder(
+module video_data_encoder
+#(parameter COUNT_WIDTH = 5) //need to determine.
+(
+    input logic clk, n_rst,
     input logic [7:0] pixel_data,
-    input logic signed [4:0] previous_count, //Decide on count reg size
     output logic [9:0] encoded_data,
-    output logic signed [4:0] next_count,
 );
     logic [8:0] q_m;
     logic [3:0] d_one_count, q_m_one_count, q_m_zero_count;
+    logic [COUNT_WIDTH-1:0] previous_count, next_count;
 
     assign d_one_count = pixel_data[0] + pixel_data[1] + pixel_data[2] + pixel_data[3] + pixel_data[4] + pixel_data[5] + pixel_data[6] + pixel_data[7];
     assign q_m_one_count = q_m[0] + q_m[1] + q_m[2] + q_m[3] + q_m[4] + q_m[5] + q_m[6] + q_m[7];
     assign q_m_zero_count = 8 - q_m_one_count;
+
+    always_ff @ (posedge clk, negedge n_rst) begin
+        if (!n_rst) begin
+            previous_count <= '0;
+        end
+        else begin
+            previous_count <= next_count;
+        end
+    end
 
     always_comb begin
         q_m[0] = pixel_data[0];
